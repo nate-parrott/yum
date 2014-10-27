@@ -1,0 +1,27 @@
+divisible = { Number called number, Number called divisor -> Bool in
+	mod number divisor
+}
+
+print_number = {	Number called N in
+	Bool called divisible_by_3 = divisible number=N divisor=3
+	Bool called divisible_by_5 = divisible number=N divisor=5
+	if (both divisible_by_3 divisible_by_5)
+	then={
+		print "FizzBuzz"
+	}
+	else={
+		if divisible_by_5
+		then={
+			print "Buzz"
+		}
+		else={
+			if divisible_by_3
+			then={
+				print "Fizz"
+			}
+			else={
+				print "Buzz"
+			}
+		}
+	}
+}
