@@ -16,13 +16,12 @@ describe('parse', function() {
 		["$root", ["$expr"]],
 		["$expr", ["number"]],
 		["$expr", ["$parens"]],
-		["$expr", ["$functionCall"]],
 		
 		["$parens", ["lparen", "$expr", "rparen"]],
-		
-		["$functionCall", ["symbol", "lparen", "$expr_list", "$rparen"]],
-		["$expr_list", ["$expr"]],
-		["$expr_list", ["$expr", "comma", "$expr_list"]],
+
+		["$list", ["symbol", "$list"]],		
+		["$list", ["symbol"]],
+		["$root", ["$list"]]
 	];
 	
 	var doesParseTreeHaveStructure = function(tree, structure) {
@@ -64,5 +63,9 @@ describe('parse', function() {
 		assert(["rparen", "comma"].indexOf(res.error.expected) != -1);
 		assert.equal(res.error.got.name, "number");
 		assert.equal(res.error.got.start, 3);
+	});
+	
+	it("should work for using recursive grammars to define lists", function() {
+		assertParsedStringHasStructure("a b", {name: "$root", children: [{name: "$list", children: [{name: "symbol"}, {name: "$list", children: [{name: 'symbol'}]}]}]});
 	});
 })
