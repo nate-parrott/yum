@@ -18,51 +18,57 @@ exports.tokenDefs = [
 ]
 
 exports.grammar = [
-	['$root', ['$statement_list']],
+	['$root', ['$line_list']],
 
-	['$statement_list', ["$statement", '$newlines', "$statement_list"]],	
-	['$statement_list', ["$statement", "$statement_list"]],
-	['$statement_list', ['$statement']],
-	
-	['$statement', ['$assignment']],
-	['$statement', ['whitespace']],
+	['$line_list', ["$line", '$newlines', "$line_list"]],	
+	['$line_list', ["$line", "$line_list"]],
+	['$line_list', ["$newlines", "$line_list"]],
+	['$line_list', ['$line']],
+
+	['$line', ['$assignment']],	
+	['$line', ['$top_level_expression']],
 	
 	["$newlines", ["newline", "$newlines"]],
 	["$newlines", ["newline"]],
 	
-	['$assignment', ["$definition", "equals", "$expression"]],
+	['$assignment', ["$declaration", "equals", "$top_level_expression"]],
+
+	["$declaration", ["$type", "called", "symbol"]],	
+	["$declaration", ["symbol"]],
 	
-	["$definition", ["symbol"]],
-	["$definition", ["$type", "called", "symbol"]],
-	
-	["$type", ["$symbol"]],
+	["$type", ["symbol"]],
 	["$type", ["$function_type"]],
+	
+	["$function_type", ["lbracket", "$type_list", "rbracket"]],
+	['$function_type', ["lbracket", "$type_list", "yields", "$type", "rbracket"]],
+	
+	["$top_level_expression", ["$expression"]],
+	["$top_level_expression", ["$function_call"]],
 	
 	["$expression", ["symbol"]],
 	["$expression", ["number"]],
-	["$expression", ["$function_call"]],
 	["$expression", ["$parenthesized_expression"]],
 	["$expression", ["$array_literal"]],
 	["$expression", ["$function_literal"]],
 	
-	["$parenthesized_expression", ["lparen", "$expression", "rparen"]],
+	["$parenthesized_expression", ["lparen", "$top_level_expression", "rparen"]],
 	
 	["$function_call", ["$expression", "$arg_list"]],
 	["$arg_list", ["$arg", "$arg_list"]],
 	["$arg_list", ["$arg"]],
 	
+	["$arg", ["symbol", "equals", "$expression"]],
 	["$arg", ["$expression"]],
-	["$arg", ["$symbol", "equals", "$expression"]],
 	
 	["$array_literal", ["lsquare", "$comma_separated_expression_list", 'rsquare']],
-	["$comma_separated_expression_list", ['$expression', 'comma', '$comma_separated_expression_list']],
-	["$comma_separated_expression_list", ['$expression']],
+	["$comma_separated_expression_list", ['$top_level_expression', 'comma', '$comma_separated_expression_list']],
+	["$comma_separated_expression_list", ['$top_level_expression']],
 	
-	["$function_literal", ["lbracket", "$function_type", 'in', "$statement_list", "rbracket"]],
-	["$function_literal", ["lbracket", "$function_type", 'in', "newline", "$statement_list", "rbracket"]],
+	["$function_literal", ["lbracket", "$declaration_list", 'in', "$line_list", "rbracket"]],
+	["$function_literal", ["lbracket", "$declaration_list", 'yields', '$type', 'in', "$line_list", "rbracket"]],
 	
-	["$function_type", ["$type_list"]],
-	["$function_type", ["$type_list", 'yields', "$type"]],
+	['$declaration_list', ['$declaration', 'comma', '$declaration_list']],
+	['$declaration_list', ['$declaration']],
 
 	["$type_list", ["$type", "comma", "$type_list"]],	
 	["$type_list", ["$type"]],

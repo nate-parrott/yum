@@ -1,6 +1,6 @@
 
 exports.parse = function(tokens, grammar) {
-	// grammars are given as arrays of rules
+		// grammars are given as arrays of rules
 	// each rule is in the form ['$result', ['$child', '$another_child', 'token']]
 	
 	// strip whitespace:
@@ -19,8 +19,9 @@ exports.parse = function(tokens, grammar) {
 		}
 	})
 	
-	var ll = function(tokens, resultSymbol) {	
-		var childError = null;
+	var ll = function(tokens, resultSymbol) {
+		var childParsings = [];
+		var childErrors = [];
 		
 		if (tokens[0].name == resultSymbol) {
 			return {result: tokens[0], remaining: tokens.slice(1)};
@@ -36,20 +37,32 @@ exports.parse = function(tokens, grammar) {
 						children.push(child.result);
 						remainingTokens = child.remaining;
 					} else {
-						if (!childError || child.error.depth > childError.depth) {
-							childError = child.error;
-						}
+						childErrors.push(child.error);
 						break;
 					}
 				}
 				if (children.length == childSymbols.length) {
-					return {result: {name: resultSymbol, children: children}, remaining: remainingTokens};
+					childParsings.push({result: {name: resultSymbol, children: children}, remaining: remainingTokens});
 				}
 			}
 		}
-		var error = childError ? childError : {expected: resultSymbol, got: tokens[0], depth: 0};
-		error.depth++; // TODO: don't mutate the original error. it shouldn't matter for now but it's shitty
-		return {result: null, error: error};
+		if (childParsings.length) {
+			var longest = childParsings[0];
+			childParsings.forEach(function(p) {
+				if (p.remaining.length < longest.remaining.length) {
+					longest = p;
+				}
+			})
+			return longest;
+		} else {
+			var error;
+			if (childErrors.length) {
+				error = {triedParsingAs: resultSymbol, children: childErrors};
+			} else {
+				error = {expected: resultSymbol, got: tokens[0], inPattern: resultSymbol, children: []};
+			}
+			return {result: null, error: error};
+		}
 	}
 	
 	var result = ll(tokens, "$root");
@@ -57,5 +70,26 @@ exports.parse = function(tokens, grammar) {
 		return {result: null, error: {expected: "end", got: result.remaining[0]}};
 	} else {
 		return result;
+	}
+}
+
+exports.printError = function(error) {
+	var getErrorLinesRecursively = function(e, depth) {
+		var line = "";
+		for (var i=0; i<depth; i++) line += "  ";
+		line += depth.toString();
+		line += JSON.stringify({expected: e.expected, got: e.got, triedParsingAs: e.triedParsingAs, inPattern: e.inPattern});
+		var lines = [line];
+		if (e.children) {
+			e.children.forEach(function(child) {
+				lines = lines.concat(getErrorLinesRecursively(child, depth+1));
+			});
+		}
+		return lines;
+	}
+	if (error) {
+		return getErrorLinesRecursively(error, 0).join("\n");
+	} else {
+		return "(no error)";
 	}
 }
