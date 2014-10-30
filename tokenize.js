@@ -27,9 +27,10 @@ exports.tokenize = function(string, tokenDefs) {
 			tokens.push(currentToken);
 		}
 	}
-	// add token names to tokens:
+	// add token names and values to tokens:
 	tokens.forEach(function(t) {
-		t.name = tokenThatMatches(string.substring(t.start, t.end));
+		t.text = string.substring(t.start, t.end);
+		t.name = tokenThatMatches(t.text);
 	});
 	return tokens;
 }

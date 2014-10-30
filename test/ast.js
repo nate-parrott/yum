@@ -32,5 +32,8 @@ describe('ast', function() {
 		assertSuccess(" six = concat_lists (range 4 6) [1, 2, 3]")
 		assertSuccess(" six = concat_lists [1, 2, 3] (range 4 6)")
 		assertSuccess("List called six = concat_lists [1, 2, 3] (range 4 6)")
+		
+		// console.log(JSON.stringify(ast.ast("{Number -> Number} called double = {Number called n -> Number in multiply 2 n}")))
+		// console.log(JSON.stringify(ast.ast("abc = function 1 2 [3,4,5]")))
 	})
 });
