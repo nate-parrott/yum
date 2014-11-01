@@ -1,7 +1,7 @@
 /*
 this takes the IR and does a few things:
-- identifies type conflicts where possible (TODO)
-- determines variables that need to be captured when creating closures (TODO)
+- identifies type conflicts where possible
+- determines variables that need to be captured when creating closures
 */
 
 var assert = require('./error.js').assert;
@@ -67,7 +67,7 @@ var inferExpressionType = function(expr, scope) {
 	if (expr.type == 'reference') {
 		var res = lookup(expr.name, scope);
 		assert(res != null, "Unknown variable '" + expr.name + "'");
-		return inferExpressionType(res, scope);
+		return res.type;
 	} else if (expr.type == 'number') {
 		return {name: 'Number'};
 	} else if (expr.type == 'functionLiteral') {
@@ -81,7 +81,7 @@ var inferExpressionType = function(expr, scope) {
 }
 
 var doTypesMatch = function(t1, t2) {
-	if (t1 === null || t2 === null) return;
+	if (t1 === null || t2 === null) return true;
 	if (deepCompare(t1, t2)) return true;
 	if (deepCompare(t1, {})) return true;
 	if (deepCompare(t2, {})) return true;
@@ -110,14 +110,16 @@ var processExpression = function(expr, scope, onVariableLookup) {
 		for (var i=0; i<expr.argNames.length; i++) {
 			childScope["key_" + expr.argNames[i]] = {type: expr.functionType.functionWithInputTypes[i], id: uniqueId()};
 		}
-		expr.bodyStatements = processStatements(expr.bodyStatements, childScope, function(varName, resultInChildScope) {
-			var resultInParentScope = lookup(varName, scope);
-			if (resultInParentScope && resultInParentScope.id === varName.id) {
-				if (expr.captureVars.indexOf(varName) == -1) expr.captureVars.push(varName);
-				onVariableLookup(varName, resultInChildScope);
-			}
-		});
-		// TODO: assert return type match
+		if (expr.bodyStatements) { // builtin fn's may not have body statements
+			expr.bodyStatements = processStatements(expr.bodyStatements, childScope, function(varName, resultInChildScope) {
+				var resultInParentScope = lookup(varName, scope);
+				if (resultInParentScope && resultInParentScope.id === resultInChildScope.id) {
+					if (expr.captureVars.indexOf(varName) == -1) expr.captureVars.push(varName);
+					onVariableLookup(varName, resultInChildScope);
+				}
+			});
+			// TODO: assert return type match
+		}
 	} else if (expr.type == 'functionCall') {
 		expr.functionExpr = processExpression(expr.functionExpr, scope, onVariableLookup);
 		expr.args = expr.args.map(function(arg) {
@@ -132,7 +134,7 @@ var processExpression = function(expr, scope, onVariableLookup) {
 			assertTypeMatch(inferExpressionType(expr.args[i].value, scope), calledFunctionType.functionWithInputTypes[i]);
 		}
 	} else if (expr.type == 'reference') {
-		onVariableLookup(expr.name, lookup(scope, expr.name));
+		onVariableLookup(expr.name, lookup(expr.name, scope));
 	}
 	return expr;
 }
@@ -159,5 +161,5 @@ var processStatements = function(statements, scope, onVariableLookup) {
 }
 
 exports.process = function(rootStatements) {
-	return processStatements(rootStatements, defaultScope.defaultScope(), function() {});
+	return processStatements(defaultScope.builtinStatements().concat(rootStatements), {}, function() {});
 }

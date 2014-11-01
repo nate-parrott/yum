@@ -1,17 +1,19 @@
-exports.defaultScope = function() {
-	return {
-		key_List: {
-			id: "builtinList",
-			type: 'functionLiteral',
-			argNames: [],
-			bodyNativeFunction: function(args, extraArgs) {
+exports.builtinStatements = function() {
+	return [
+		{
+			lvalue: {name: "List", type: null}, 
+			expression: {
+				type: 'functionLiteral',
+				argNames: [],
+				bodyNativeFunction: function(args, extraArgs) {
 				
-			},
-			functionType: {
-				functionWithOverflowArgs: true,
-				functionWithInputTypes: [],
-				functionWithOutputType: {name: "List"}
+				},
+				functionType: {
+					functionWithOverflowArgs: true,
+					functionWithInputTypes: [],
+					functionWithOutputType: {name: "List"}
+				}
 			}
 		}
-	}
+	]
 }
