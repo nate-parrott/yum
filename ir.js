@@ -1,4 +1,4 @@
-var assert = require('assert');
+var assert = require('./error.js').assert;
 
 // MARK: Utility functions
 
@@ -97,7 +97,7 @@ var expression = function(exp) {
 var functionLiteral = function(lit) {
 	var statements = flattenToList(findChild(lit, "$line_list"), "$line_list", "$line", ["$newlines"]).map(statementFromLine);
 	var returnType = hasChild(lit, "$type") ? typeFromType(findChild(lit, "$type")) : null;
-	var inputLValues = flattenToList(findChild(lit, "$declaration_list"), "$declaration_list", "$declaration").map(lvalueFromDeclaration);
+	var inputLValues = hasChild(lit, "$declaration_list") ? flattenToList(findChild(lit, "$declaration_list"), "$declaration_list", "$declaration").map(lvalueFromDeclaration) : [];
 	var argTypes = inputLValues.map(function(lv) {return lv.type});
 	var argNames = inputLValues.map(function(lv) {return lv.name});
 	return {
@@ -112,9 +112,13 @@ var functionLiteral = function(lit) {
 }
 
 var arrayLiteral = function(lit) {
+	var itemsAsArgs = flattenToList(findChild(lit, '$comma_separated_expression_list'), '$comma_separated_expression_list', "$top_level_expression", ['comma']).map(topLevelExpression).map(function(expr, i) {
+		return {name: "$" + i, value: expr};
+	});
 	return {
-		type: 'arrayLiteral',
-		items: flattenToList(findChild(lit, '$comma_separated_expression_list'), '$comma_separated_expression_list', "$top_level_expression", ['comma']).map(topLevelExpression)
+		type: 'functionCall',
+		functionExpr: {type: 'reference', name: 'List'},
+		args: itemsAsArgs
 	}
 }
 

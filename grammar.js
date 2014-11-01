@@ -33,7 +33,7 @@ exports.grammar = [
 	
 	['$assignment', ["$declaration", "equals", "$top_level_expression"]],
 
-	["$declaration", ["$type", "called", "symbol"]],	
+	["$declaration", ["$type", "called", "symbol"]],
 	["$declaration", ["symbol"]],
 	
 	["$type", ["symbol"]],
@@ -65,6 +65,7 @@ exports.grammar = [
 	["$comma_separated_expression_list", ['$top_level_expression']],
 	
 	["$function_literal", ["lbracket", "$declaration_list", 'in', "$line_list", "rbracket"]],
+	["$function_literal", ["lbracket", "$line_list", "rbracket"]],
 	["$function_literal", ["lbracket", "$declaration_list", 'yields', '$type', 'in', "$line_list", "rbracket"]],
 	
 	['$declaration_list', ['$declaration', 'comma', '$declaration_list']],

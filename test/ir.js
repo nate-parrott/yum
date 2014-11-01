@@ -1,4 +1,5 @@
 var assert = require("assert");
+var fs = require("fs");
 
 var ast = require("../ast.js");
 var ir = require("../ir.js");
@@ -7,9 +8,16 @@ function assertResult(code, result) {
 	assert.deepEqual(ir.ir(ast.ast(code).result), result, "Template:\n" + JSON.stringify(result) + "\nis not equal to result:\n" + JSON.stringify(ir.ir(ast.ast(code).result)));
 }
 
+function assertNoFailure(code) {
+	assert(ir.ir(ast.ast(code).result) !== null, "Failed to generate IR for code:\n", code);
+}
+
 describe('ir', function() {
 	it("works", function() {
 		assertResult("1", [
+			{expression: {type: 'number', value: 1}}
+		]);
+		assertResult("(1)", [
 			{expression: {type: 'number', value: 1}}
 		]);
 		assertResult("a = 1.23", [
@@ -27,10 +35,14 @@ describe('ir', function() {
 		{lvalue: {name: 'x', type: null}, expression: {type: 'functionCall', functionExpr: {type: 'reference', name: 'fun'}, args: [{name: "$0", value: {type: 'number', value: 1}}, {name: "$1", value: {type: 'number', value: 2}}]}}
 		])
 		assertResult("abc = ([1,2])",[
-		{lvalue: {name: 'abc', type: null}, expression: {type: 'arrayLiteral', items:[
-		{type: 'number', value: 1},
-		{type: 'number', value: 2}
-		]}}
+		{lvalue: {name: 'abc', type: null}, expression: {
+			type: 'functionCall', 
+			functionExpr: {type: 'reference', name: 'List'},
+			args:[
+				{name: "$0", value: {type: 'number', value: 1}},
+				{name: "$1", value: {type: 'number', value: 2}}
+				]
+			}}
 		])
 		assertResult("fn = {Number called n -> Number in\n double n}", [
 		{lvalue: {name: 'fn', type: null}, expression: {
@@ -68,7 +80,18 @@ describe('ir', function() {
 				}
 			}}
 		])
-		
+		assertResult("fn = {double n}", [
+		{lvalue: {name: 'fn', type: null}, expression: {
+				type: 'functionLiteral', 
+				argNames: [], 
+				bodyStatements:
+					[{expression: {type: 'functionCall', functionExpr: {type: 'reference', name: 'double'}, args: [{name: "$0", value: {type: 'reference', name: 'n'}}]}}],
+				functionType: {
+					functionWithInputTypes: [],
+					functionWithOutputType: null
+				}
+			}}
+		])
 		
 		
 		
