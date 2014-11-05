@@ -118,8 +118,12 @@ var processExpression = function(expr, scope, onVariableLookup) {
 					onVariableLookup(varName, resultInChildScope);
 				}
 			});
-			// TODO: assert return type match
 		}
+		var returnTypeInferred = null; // todo: figure out how to represent 'returns nothing' as opposed to 'returns something unknown'
+		if (expr.bodyStatements && expr.bodyStatements.length) {
+			returnTypeInferred = inferExpressionType(expr.bodyStatements[expr.bodyStatements.length-1].expression, childScope);
+		}
+		assertTypeMatch(returnTypeInferred, expr.functionType.functionWithOutputType);
 	} else if (expr.type == 'functionCall') {
 		expr.functionExpr = processExpression(expr.functionExpr, scope, onVariableLookup);
 		expr.args = expr.args.map(function(arg) {

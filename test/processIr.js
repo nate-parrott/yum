@@ -39,6 +39,9 @@ describe('processIr', function() {
 		assertNoError(" n = {Number called n -> Number in n}\nNumber called n2 = n 12");
 		assertError(" n = {Number called n -> Number in n}\nn 12 13");
 		assertError(" n = {Number called n -> Number in n}\nList called n2 = n 12");
+		
+		assertNoError("{Number called n -> Number in 12}")
+		assertError("{Number called n -> List in 12}")
 	})
 	
 	it("determines when variable capture is needed", function() {
