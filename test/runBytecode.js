@@ -55,4 +55,9 @@ describe('bytecode generation and execution', function() {
 		assertCodeResult("not FALSE", {type: 'Bool', value: true});
 	});
 	
+	it("has mod, like any hip language", function() {
+		assertCodeResult("mod 5 2", {type: 'Number', value: 1});
+		assertCodeResult("mod 10 5", {type: 'Number', value: 0});
+	});
+	
 });

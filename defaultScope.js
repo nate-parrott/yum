@@ -2,7 +2,7 @@ var assert = require('assert');
 
 exports.builtinStatements = function() {
 	return [
-	list, add, subtract, multiply, divide, equal, and, or, not
+	list, add, subtract, multiply, divide, equal, and, or, not, mod
 	]
 }
 var list = {
@@ -89,6 +89,9 @@ var or = newBinaryOperator('or', [bool, bool], bool, function(m1,m2) {
 var not = newUnaryOperator('not', [bool], bool, function(m1) {
 	return {type: 'Bool', value: !m1.value};
 })
+var mod = newBinaryOperator('mod', [num,num], num, function(m1,m2) {
+	return {type: 'Number', value: m1.value % m2.value};
+});
 
 exports.getNativeFunctionDictionary = function() {
 	var d = {};
