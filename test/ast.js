@@ -12,6 +12,7 @@ describe('ast', function() {
 	
 	it('works', function() {
 		assertSuccess("a = 123");
+		assertSuccess("a = \"abc\"");
 		assertSuccess("b=123");
 		assertSuccess("c = 12\nd = 13");
 		assertSuccess("c = 12\nd = 13\ne = 14");

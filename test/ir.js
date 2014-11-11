@@ -104,7 +104,9 @@ describe('ir', function() {
 				}
 			}}
 		])
-		
+		assertResult("\"abc\"", [
+			{expression: {type: 'string', value: "abc"}}
+		]);
 		
 		
 		

@@ -77,7 +77,7 @@ var add = newBinaryOperator('add', [num,num], num, function(m1,m2){return {type:
 var subtract = newBinaryOperator('subtract', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value-m2.value}});
 var divide = newBinaryOperator('divide', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value/m2.value}});
 var equal = newBinaryOperator('equal', [null,null], bool, function(m1,m2) {
-	var eq = m1.type===m2.type && ((m1.type=='Bool' && m1.value===m2.value) || (m1.type=='Number' && m1.value===m2.value));
+	var eq = m1.type===m2.type && ((m1.type=='Bool' && m1.value===m2.value) || (m1.type=='Number' && m1.value===m2.value) || (m1.type=='String' && m1.value===m2.value));
 	return {type: 'Bool', value: eq};
 })
 var and = newBinaryOperator('and', [bool, bool], bool, function(m1,m2) {

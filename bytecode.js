@@ -21,6 +21,10 @@ var generateBytecodeForExpressionAndReturnRegisterContainingResult = function(ex
 		var retId = uniqueId(expr.value);
 		currentFunction.push(["BOOL", expr.value, retId]);
 		return retId;
+	} else if (expr.type == 'string') {
+		var retId = uniqueId(expr.value);
+		currentFunction.push(["STRING", expr.value, retId]);
+		return retId;
 	} else if (expr.type == 'reference') {
 		return scope['var_' + expr.name];
 	} else if (expr.type == 'functionLiteral') {

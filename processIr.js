@@ -30,6 +30,8 @@ var inferExpressionType = function(expr, scope) {
 		return res.type;
 	} else if (expr.type == 'number') {
 		return {name: 'Number'};
+	} else if (expr.type == 'string') {
+		return {name: 'String'};
 	} else if (expr.type == 'bool') {
 		return {name: 'Bool'};
 	} else if (expr.type == 'functionLiteral') {

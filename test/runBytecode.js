@@ -60,4 +60,9 @@ describe('bytecode generation and execution', function() {
 		assertCodeResult("mod 10 5", {type: 'Number', value: 0});
 	});
 	
+	it("supports strings", function() {
+		assertCodeResult("\"abc\"", {type: 'String', value: 'abc'});
+		assertCodeResult("equal \"abc\" \"abc\"", {type: 'Bool', value: true});
+	})
+	
 });

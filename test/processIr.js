@@ -30,6 +30,9 @@ describe('processIr', function() {
 		assertNoError("Bool called x = TRUE");
 		assertError("Number called x = FALSE");
 		
+		assertNoError("String called x = \"abc def\"");
+		assertError("Number called x = \"xyz\"");
+		
 		assertNoError("{Number -> Number} called n = {Number called n -> Number in n}");
 		assertError("Number called n = {Number called n -> Number in n}");
 		
