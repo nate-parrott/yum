@@ -27,6 +27,9 @@ var runFunction = function(code, offset, vars, getArgByName) {
 		} else if (opcode == 'NUMBER') {
 			vars = shallowCopy(vars);
 			vars[op[2]] = {type: 'Number', value: op[1]};
+		} else if (opcode == 'BOOL') {
+			vars = shallowCopy(vars);
+			vars[op[2]] = {type: 'Bool', value: op[1]};
 		} else if (opcode == 'COPY') {
 			vars = shallowCopy(vars);
 			vars[op[2]] = vars[op[1]];

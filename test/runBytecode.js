@@ -34,4 +34,9 @@ describe('bytecode generation and execution', function() {
 		assertCodeResult("add_and_double = {x, y in multiply 2 (add x y)}\nadd_and_double 2 3", {type: 'Number', value: 10});
 	});
 	
+	it("works w/ booleans", function() {
+		assertCodeResult("t = TRUE\nt", {type: 'Bool', value: true});
+		assertCodeResult("t = FALSE\nt", {type: 'Bool', value: false});
+	});
+	
 });
