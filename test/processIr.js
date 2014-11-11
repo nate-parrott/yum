@@ -27,6 +27,9 @@ describe('processIr', function() {
 		assertNoError("List called n = [1]");
 		assertError("Number called n = [1]");
 		
+		assertNoError("Bool called x = TRUE");
+		assertError("Number called x = FALSE");
+		
 		assertNoError("{Number -> Number} called n = {Number called n -> Number in n}");
 		assertError("Number called n = {Number called n -> Number in n}");
 		

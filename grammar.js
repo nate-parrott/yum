@@ -2,6 +2,8 @@ exports.tokenDefs = [
 	['called', /called/],
 	['called', /:/],
 	['in', /in/],
+	['true', /TRUE/],
+	['false', /FALSE/],
 	['number', /-?[0-9]*(\.[0-9]*)?/],
 	['symbol', /[a-zA-Z_][a-zA-Z0-9_-]*/],
 	['newline', /\n/],
@@ -46,6 +48,7 @@ exports.grammar = [
 	["$top_level_expression", ["$function_call"]],
 	
 	["$expression", ["symbol"]],
+	["$expression", ["$bool"]],
 	["$expression", ["number"]],
 	["$expression", ["$parenthesized_expression"]],
 	["$expression", ["$array_literal"]],
@@ -56,6 +59,9 @@ exports.grammar = [
 	["$function_call", ["$expression", "$arg_list"]],
 	["$arg_list", ["$arg", "$arg_list"]],
 	["$arg_list", ["$arg"]],
+	
+	["$bool", ["true"]],
+	["$bool", ["false"]],
 	
 	["$arg", ["symbol", "equals", "$expression"]],
 	["$arg", ["$expression"]],

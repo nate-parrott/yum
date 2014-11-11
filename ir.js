@@ -89,6 +89,9 @@ var expression = function(exp) {
 		return arrayLiteral(findChild(exp, "$array_literal"));
 	} else if (hasChild(exp, "$function_literal")) {
 		return functionLiteral(findChild(exp, "$function_literal"));
+	} else if (hasChild(exp, "$bool")) {
+		var child = findChild(exp, "$bool");
+		return {type: 'bool', value: hasChild(child, "true")};
 	} else {
 		assert(false, "Unknown expression:\n" + JSON.stringify(exp));
 	}
