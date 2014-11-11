@@ -39,4 +39,20 @@ describe('bytecode generation and execution', function() {
 		assertCodeResult("t = FALSE\nt", {type: 'Bool', value: false});
 	});
 	
+	it("does equality", function() {
+		assertCodeResult("a=1\nb=1\nequal a b", {type: 'Bool', value: true});
+	});
+		
+	it("has and", function() {
+		assertCodeResult("and TRUE FALSE", {type: 'Bool', value: false});
+	});
+	
+	it("has or", function() {
+		assertCodeResult("or TRUE FALSE", {type: 'Bool', value: true});
+	});
+	
+	it ("has not", function() {
+		assertCodeResult("not FALSE", {type: 'Bool', value: true});
+	});
+	
 });
