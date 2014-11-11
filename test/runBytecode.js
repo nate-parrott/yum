@@ -15,19 +15,23 @@ var assertCodeResult = function(code, expectedResult) {
 
 describe('bytecode generation and execution', function() {
 	it("works w/ simple assignment and return", function() {
-		assertCodeResult("x=5\nx", {type: 'number', value: 5});
+		assertCodeResult("x=5\nx", {type: 'Number', value: 5});
 	});
 	
 	it("works w/ function calls", function() {
-		assertCodeResult("multiply 2 3", {type: 'number', value: 6});
+		assertCodeResult("multiply 2 3", {type: 'Number', value: 6});
 	});
 	
 	it("works w/ nested function calls", function() {
-		assertCodeResult("multiply 2 (multiply 4 5)", {type: 'number', value: 40});
+		assertCodeResult("multiply 2 (multiply 4 5)", {type: 'Number', value: 40});
 	});
 	
 	it("works w/ closures", function() {
-		assertCodeResult("triple = {n in multiply n 3}\ntriple 4", {type: 'number', value: 12});
+		assertCodeResult("triple = {n in multiply n 3}\ntriple 4", {type: 'Number', value: 12});
+	});
+	
+	it("works w/ more closures", function() {
+		assertCodeResult("add_and_double = {x, y in multiply 2 (add x y)}\nadd_and_double 2 3", {type: 'Number', value: 10});
 	});
 	
 });

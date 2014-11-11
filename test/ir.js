@@ -80,6 +80,18 @@ describe('ir', function() {
 				}
 			}}
 		])
+		assertResult("fn = {n,x in\n double n}", [
+		{lvalue: {name: 'fn', type: null}, expression: {
+				type: 'functionLiteral', 
+				argNames: ["n", "x"], 
+				bodyStatements:
+					[{expression: {type: 'functionCall', functionExpr: {type: 'reference', name: 'double'}, args: [{name: "$0", value: {type: 'reference', name: 'n'}}]}}],
+				functionType: {
+					functionWithInputTypes: [null, null],
+					functionWithOutputType: null
+				}
+			}}
+		])
 		assertResult("fn = {double n}", [
 		{lvalue: {name: 'fn', type: null}, expression: {
 				type: 'functionLiteral', 

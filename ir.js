@@ -97,7 +97,7 @@ var expression = function(exp) {
 var functionLiteral = function(lit) {
 	var statements = flattenToList(findChild(lit, "$line_list"), "$line_list", "$line", ["$newlines"]).map(statementFromLine);
 	var returnType = hasChild(lit, "$type") ? typeFromType(findChild(lit, "$type")) : null;
-	var inputLValues = hasChild(lit, "$declaration_list") ? flattenToList(findChild(lit, "$declaration_list"), "$declaration_list", "$declaration").map(lvalueFromDeclaration) : [];
+	var inputLValues = hasChild(lit, "$declaration_list") ? flattenToList(findChild(lit, "$declaration_list"), "$declaration_list", "$declaration", ["comma"]).map(lvalueFromDeclaration) : [];
 	var argTypes = inputLValues.map(function(lv) {return lv.type});
 	var argNames = inputLValues.map(function(lv) {return lv.name});
 	return {
