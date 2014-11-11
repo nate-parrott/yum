@@ -36,7 +36,7 @@ var generateBytecodeForExpressionAndReturnRegisterContainingResult = function(ex
 			expr.captureVars.forEach(function(name) {
 				currentFunction.push(["CAPTURE_VAR", scope['var_' + name]]);
 			})
-			currentFunction.push("END_CLOSURE");
+			currentFunction.push(["END_CLOSURE"]);
 		} else {
 			currentFunction.push(["CREATE_NATIVE_FUNCTION", expr.nativeFunctionName, retId]);
 		}

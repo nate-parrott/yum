@@ -21,4 +21,13 @@ describe('bytecode generation and execution', function() {
 	it("works w/ function calls", function() {
 		assertCodeResult("multiply 2 3", {type: 'number', value: 6});
 	});
+	
+	it("works w/ nested function calls", function() {
+		assertCodeResult("multiply 2 (multiply 4 5)", {type: 'number', value: 40});
+	});
+	
+	it("works w/ closures", function() {
+		assertCodeResult("triple = {n in multiply n 3}\ntriple 4", {type: 'number', value: 12});
+	});
+	
 });
