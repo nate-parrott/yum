@@ -1,0 +1,46 @@
+#!/usr/local/bin/node
+var ast = require("./ast.js");
+var ir = require("./ir.js");
+var processIr = require("./processIr.js");
+var bytecode = require("./bytecode.js");
+var run = require('./run.js');
+var fs = require('fs');
+var readline = require('readline-sync');
+
+function runCode(code, printResult, vars) {
+	var astResponse = ast.ast(code);
+	if (astResponse.result) {
+		var irResponse = ir.ir(astResponse.result);
+		if (irResponse) {
+			var processed = processIr.process(irResponse);
+			// TODO: don't crash the whole program when processIr.process fails
+			var generatedBytecode = bytecode.generateBytecode(processed);
+			var resultDict = run.runWithOptions(generatedBytecode, {vars: vars});
+			if (printResult) {
+				console.log(resultDict.result.value);
+			}
+			return resultDict.vars;
+		} else {
+			// this should not happen (?)
+		}
+	} else {
+		console.log("Syntax error: ", astResponse.error);
+	}
+	return vars;
+}
+
+if (process.argv.length == 2) {
+	// enter REPL
+	while (true) {
+		// TODO: support preserving variables between lines
+		var line = readline.question(" > ");
+		if (line == 'quit') {
+			break;
+		} else {
+			runCode(line, true, {});
+		}
+	}
+} else {
+	var code = fs.readFileSync(process.argv[2], "utf8");
+	runCode(code, false, {});
+}

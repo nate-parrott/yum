@@ -40,7 +40,7 @@ var runFunction = function(code, offset, vars, getArgByName) {
 			vars = shallowCopy(vars);
 			vars[op[2]] = {type: 'native_function', name: op[1]};
 		} else if (opcode == 'RETURN') {
-			return vars[op[1]];
+			return {result: vars[op[1]], vars: vars};
 		} else if (opcode == 'START_CALL') {
 			openFunctionCallCtx = {};
 		} else if (opcode == 'ARG') {
@@ -61,7 +61,7 @@ var runFunction = function(code, offset, vars, getArgByName) {
 				closure.capture_vars.forEach(function(cap) {
 					childVars[cap[0]] = cap[1];
 				});
-				result = runFunction(code, offsetOfLabel(code, closure.label), childVars, getChildArgByName);
+				result = runFunction(code, offsetOfLabel(code, closure.label), childVars, getChildArgByName).result;
 			} else {
 				assert(false, 'Tried to call un-callable object: ' + closure.type);
 			}
@@ -89,6 +89,12 @@ var runFunction = function(code, offset, vars, getArgByName) {
 	}
 }
 
+exports.runWithOptions = function(code, options) {
+	var vars = options.vars === undefined ? {} : options.vars;
+	var resultDict = runFunction(code, 0, vars, function(_) {assert(false, "You can't read arguments inside the top-level function")});
+	return resultDict;
+}
+
 exports.run = function(code) {
-	return runFunction(code, 0, {}, function(_) {assert(false, "You can't read arguments inside the top-level function")});
+	return exports.runWithOptions(code, {}).result;
 }

@@ -27,6 +27,7 @@ exports.grammar = [
 	['$line_list', ["$line", "$line_list"]],
 	['$line_list', ["$newlines", "$line_list"]],
 	['$line_list', ['$line']],
+	['$line_list', ['$line', '$newlines']],
 
 	['$line', ['$assignment']],	
 	['$line', ['$top_level_expression']],

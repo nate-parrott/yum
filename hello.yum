@@ -1,4 +1,8 @@
-Text called greeting = "hello"
-thing = "world"
-Text called message = join_text [greeting, ", ", thing]
-print message
+String called hello = "hello"
+
+printTwice = {String called str in
+	print str
+	print str
+}
+
+printTwice hello

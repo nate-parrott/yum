@@ -23,7 +23,9 @@ exports.parse = function(tokens, grammar) {
 		var childParsings = [];
 		var childErrors = [];
 		
-		if (tokens[0].name == resultSymbol) {
+		if (tokens.length == 0) {
+			return {result: null, error: "Expected something"};
+		} else if (tokens[0].name == resultSymbol) {
 			return {result: tokens[0], remaining: tokens.slice(1)};
 		} else if (rules[resultSymbol]) {
 			var possibleRules = rules[resultSymbol];

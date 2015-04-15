@@ -1,0 +1,14 @@
+{
+  "name": "yum",
+  "version": "0.0.0",
+  "description": "",
+  "main": "yum",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC"
+}

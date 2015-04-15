@@ -2,7 +2,7 @@ var assert = require('assert');
 
 exports.builtinStatements = function() {
 	return [
-	list, add, subtract, multiply, divide, equal, and, or, not, mod
+	list, add, subtract, multiply, divide, equal, and, or, not, mod, print
 	]
 }
 var list = {
@@ -72,10 +72,18 @@ var newBinaryOperator = function(name, inputTypes, outputType, op) {
 
 var num = {name: 'Number'};
 var bool = {name: 'Bool'};
+var string = {name: 'String'};
+
+// math operators
 var multiply = newBinaryOperator('multiply', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value*m2.value}});
 var add = newBinaryOperator('add', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value+m2.value}});
 var subtract = newBinaryOperator('subtract', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value-m2.value}});
 var divide = newBinaryOperator('divide', [num,num], num, function(m1,m2){return {type: 'Number', value: m1.value/m2.value}});
+var mod = newBinaryOperator('mod', [num,num], num, function(m1,m2) {
+	return {type: 'Number', value: m1.value % m2.value};
+});
+
+// logical operators
 var equal = newBinaryOperator('equal', [null,null], bool, function(m1,m2) {
 	var eq = m1.type===m2.type && ((m1.type=='Bool' && m1.value===m2.value) || (m1.type=='Number' && m1.value===m2.value) || (m1.type=='String' && m1.value===m2.value));
 	return {type: 'Bool', value: eq};
@@ -89,9 +97,12 @@ var or = newBinaryOperator('or', [bool, bool], bool, function(m1,m2) {
 var not = newUnaryOperator('not', [bool], bool, function(m1) {
 	return {type: 'Bool', value: !m1.value};
 })
-var mod = newBinaryOperator('mod', [num,num], num, function(m1,m2) {
-	return {type: 'Number', value: m1.value % m2.value};
-});
+
+// system operators
+var print = newUnaryOperator('print', [string], string, function(m1) {
+	console.log(m1.value);
+	return m1;
+})
 
 exports.getNativeFunctionDictionary = function() {
 	var d = {};
